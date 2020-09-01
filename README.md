@@ -56,6 +56,24 @@ Date/Time classes in R using the `strptime()` and `as.Date()`
 functions.
 
 * Note that in this dataset missing values are coded as `?`.
+library("data.table")
+getwd()
+setwd("C:/Users/Dell/Desktop/AS2017373/peerdata")
+
+#Reading the data from file & subsets data for specified dates
+powerData <- data.table::fread(input = "household_power_consumption.txt"
+                             , na.strings="?"
+)
+
+# creating histogram from printing in scientific notation
+powerData[, Global_active_power := lapply(.SD, as.numeric), .SDcols = c("Global_active_power")]
+
+# Changing Date Column in to Date Type
+powerData[, Date := lapply(.SD, as.Date, "%d/%m/%Y"), .SDcols = c("Date")]
+
+# Filter the Dates for 2007-02-01 and 2007-02-02
+powerData <- powerData[(Date >= "2007-02-01") & (Date <= "2007-02-02")]
+
 
 
 ## Making Plots
@@ -95,20 +113,122 @@ The four plots that you will need to construct are shown below.
 ### Plot 1
 
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
+![plot of plot1](figure/plot1.png) 
+png("plot1.png", width=480, height=480)
+
+## Plot 1
+hist(powerData[, Global_active_power], main="Global Active Power", 
+     xlab="Global Active Power ( in kilowatts)", ylab="Frequency", col="Red")
+
+dev.off()
+# Plot 1
+plot(powerData[, dateTime], powerDT[, Global_active_power], type="l", xlab="", ylab="Global Active Power")
+
 
 
 ### Plot 2
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
+![plot of plot2](figure/plot2.png) 
+library("data.table")
+
+setwd("C:/Users/Dell/Desktop/AS2017373/peerdata")
+
+#Reading the data from file  & subsets data for specified dates
+powerData <- data.table::fread(input = "household_power_consumption.txt"
+                             , na.strings="?"
+)
+
+# apply Scientific Notation
+powerData[, Global_active_power := lapply(.SD, as.numeric), .SDcols = c("Global_active_power")]
+
+# Making a POSIXct date capable of being filtered and graphed by time of day
+powerData[, dateTime := as.POSIXct(paste(Date, Time), format = "%d/%m/%Y %H:%M:%S")]
+
+# Filtering Dates for 2007-02-01 and 2007-02-02
+powerData <- powerDT[(dateTime >= "2007-02-01") & (dateTime < "2007-02-03")]
+
+png("plot2.png", width=480, height=480)
+
+## Plot 2
+plot(x = powerData[, dateTime]
+     , y = powerDT[, Global_active_power]
+     , type="l", xlab="", ylab="Global Active Power (kilowatts)")
+
+dev.off()
+# Plot 2
+plot(powerData[, dateTime],powerDT[, Voltage], type="l", xlab="datetime", ylab="Voltage")
 
 
 ### Plot 3
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4.png) 
+![plot of plot3](figure/plot3.png) 
+library("data.table")
+
+setwd("C:/Users/Dell/Desktop/AS2017373/peerdata")
+
+#Reads in data from file then subsets data for specified dates
+powerData <- data.table::fread(input = "household_power_consumption.txt"
+                             , na.strings="?"
+)
+
+# Prevents Scientific Notation
+powerData[, Global_active_power := lapply(.SD, as.numeric), .SDcols = c("Global_active_power")]
+
+# Making a POSIXct date capable of being filtered and graphed by time of day
+powerData[, dateTime := as.POSIXct(paste(Date, Time), format = "%d/%m/%Y %H:%M:%S")]
+
+# Filter Dates for 2007-02-01 and 2007-02-02
+powerData <- powerData[(dateTime >= "2007-02-01") & (dateTime < "2007-02-03")]
+
+png("plot3.png", width=480, height=480)
+
+# Plot 3
+plot(powerData[, dateTime], powerDT[, Sub_metering_1], type="l", xlab="", ylab="Energy sub metering")
+lines(powerData[, dateTime], powerDT[, Sub_metering_2],col="red")
+lines(powerData[, dateTime], powerDT[, Sub_metering_3],col="blue")
+legend("topright"
+       , col=c("black","red","blue")
+       , c("Sub_metering_1  ","Sub_metering_2  ", "Sub_metering_3  ")
+       ,lty=c(1,1), lwd=c(1,1))
+
+dev.off()
+# Plot 3
+plot(powerData[, dateTime], powerDT[, Sub_metering_1], type="l", xlab="", ylab="Energy sub metering")
+lines(powerData[, dateTime], powerDT[, Sub_metering_2], col="red")
+lines(powerData[, dateTime], powerDT[, Sub_metering_3],col="blue")
+legend("topright", col=c("black","red","blue")
+       , c("Sub_metering_1  ","Sub_metering_2  ", "Sub_metering_3  ")
+       , lty=c(1,1)
+       , bty="n"
+       , cex=.5) 
 
 
 ### Plot 4
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5.png) 
+![plot of plot4](figure/plot4.png) 
+library("data.table")
+
+setwd("C:/Users/Dell/Desktop/AS2017373/peerdata")
+
+#Reads in data from file then subsets data for specified dates
+powerData <- data.table::fread(input = "household_power_consumption.txt"
+                             , na.strings="?"
+)
+
+# Prevents Scientific Notation
+powerData[, Global_active_power := lapply(.SD, as.numeric), .SDcols = c("Global_active_power")]
+
+# Making a POSIXct date capable of being filtered and graphed by time of day
+powerData[, dateTime := as.POSIXct(paste(Date, Time), format = "%d/%m/%Y %H:%M:%S")]
+
+# Filter Dates for 2007-02-01 and 2007-02-02
+powerData <- powerData[(dateTime >= "2007-02-01") & (dateTime < "2007-02-03")]
+
+png("plot4.png", width=480, height=480)
+
+par(mfrow=c(2,2))
+# Plot 4
+plot(powerData[, dateTime], powerDT[,Global_reactive_power], type="l", xlab="datetime", ylab="Global_reactive_power")
+
+dev.off()
 
